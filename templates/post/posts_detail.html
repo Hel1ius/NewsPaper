@@ -1,0 +1,208 @@
+{% extends 'default.html' %}
+{% load static %}
+{% block title %}
+    {{ post.header|truncatechars:10 }}
+{% endblock %}
+{% load static %}
+
+<body>
+
+<!-- Header -->
+{% block header %}
+    {% include 'include/header.html' %}
+{% endblock %}
+<!-- /Header -->
+
+<!-- SECTION -->
+{% block content %}
+    <div class="section">
+        <!-- CONTAINER -->
+        <div class="container">
+            <!-- ROW -->
+            <div class="row">
+                <!-- Main Column -->
+                <div class="col-md-8">
+
+                    <!-- breadcrumb -->
+                    <ul class="article-breadcrumb">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">News</a></li>
+                        <li>{{ post.header }}</li>
+                    </ul>
+                    <!-- /breadcrumb -->
+
+                    <!-- ARTICLE POST -->
+                    <article class="article article-post">
+                        <div class="article-share">
+                            <a href="#" class="facebook"><i class="fa fa-facebook"></i></a>
+                            <a href="#" class="twitter"><i class="fa fa-twitter"></i></a>
+                            <a href="#" class="google"><i class="fa fa-google-plus"></i></a>
+                        </div>
+                        <div class="article-main-img">
+                            <img src="{% static  'img/img-post.jpg' %}" alt="">
+                        </div>
+                        <div class="article-body">
+                            <ul class="article-info">
+                                <li class="article-category"><a href="#">News</a></li>
+                                <li class="article-type"><i class="fa fa-file-text"></i></li>
+                                {% if is_premium %}
+                                    <li><a class="article-info-link"
+                                           href="{% url 'update_post' post.id %}">Редактировать</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                            <h1 class="article-title">{{ post.header }}</h1>
+                            <ul class="article-meta">
+                                <li><i class="fa fa-clock-o"></i> {{ post.time_in }}</li>
+                                <li><i class="fa fa-comments"></i> {{ post.rating }}</li>
+                            </ul>
+                            <p>
+                                {{ post.content }}
+                            </p>
+                        </div>
+                    </article>
+                    <!-- /ARTICLE POST -->
+
+                    <!-- widget tags -->
+                    <div class="widget-tags">
+                        <ul>
+                            <li><a href="#">{{ post.get_chapter_display }}</a></li>
+                            {% for category in post.categories.all %}
+                                <li><a href="#">{{ category }}</a></li>
+                            {% endfor %}
+                            {% if is_not_subscribed %}
+                                <a class="btn btn-primary" href="{% url 'subscribe' post.id %}">Подписаться</a>
+                            {% endif %}
+                    </div>
+                    <!-- /widget tags -->
+
+                    <!-- article comments -->
+                    <div class="article-comments">
+                        <div class="section-title">
+                            <h2 class="title">Comments</h2>
+                        </div>
+
+                        <!-- comment -->
+                        {% for comment in post.get_comment %}
+                            <div class="media">
+                                <div class="media-left">
+                                    <img src="{% static 'img/av-1.jpg' %}" alt="">
+                                </div>
+                                <div class="media-body">
+                                    <div class="media-heading">
+                                        <h5>{{ comment.user }} <span class="reply-time">{{ comment.time_in }}</span>
+                                        </h5>
+                                    </div>
+                                    <p>{{ comment.content }}</p>
+                                    <a href="#formReview" class="reply-btn"
+                                       onclick="addComment('{{ comment.user.username }}', '{{ comment.id }}')">
+                                        Ответить
+                                    </a>
+                                </div>
+
+                                <!-- comment -->
+                                {% for com in comment.comment_set.all %}
+                                    <div class="media">
+                                        <div class="media-left">
+                                            <img src="{% static 'img/av-1.jpg' %}" alt="">
+                                        </div>
+                                        <div class="media-body">
+                                            <div class="media-heading">
+                                                <h5>{{ com.name }}<span class="reply-time">{{ com.time_in }}</span></h5>
+                                            </div>
+                                            <p>{{ com.content }}</p>
+                                            <a href="#formReview" class="reply-btn"
+                                               onclick="addComment('{{ comment.user.username }}', '{{ comment.id }}')">
+                                                Ответить
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                <!-- /comment -->
+                            </div>
+                        {% endfor %}
+                        <!-- /comment -->
+                    </div>
+                    <!-- /article comments -->
+
+                    <!-- reply form -->
+                    <div class="article-reply-form">
+                        <div class="section-title">
+                            <h2 class="title">Leave a reply</h2>
+                        </div>
+                        {% if user.is_authenticated %}
+                            <form action="{% url 'add_comment' post.id %}" method="post" id="formReview">
+                                {% csrf_token %}
+                                <input class="input" name="parent" id="contactparent" value="" type="hidden">
+                                <input class="input" name="user" value="{{ user.id }}" type="hidden" readonly>
+                                <input class="input" value="{{ user.username }}" type="text" readonly>
+                                <textarea class="input" placeholder="Message" name="content"
+                                          id="contactcomment"></textarea>
+                                <button class="input-btn">Send Message</button>
+                            </form>
+                        {% else %}
+                            <p>Отзывы могут оставлять только авторизованные пользователи!</p>
+                        {% endif %}
+                    </div>
+                    <!-- /reply form -->
+                </div>
+                <!-- /Main Column -->
+
+                <!-- Aside Column -->
+                <div class="col-md-4">
+
+                    <!-- social widget -->
+                    <div class="widget social-widget">
+                        <div class="widget-title">
+                            <h2 class="title">Stay Connected</h2>
+                        </div>
+                        <ul>
+                            <li><a href="#" class="facebook"><i class="fa fa-facebook"></i><br><span>Facebook</span></a>
+                            </li>
+                            <li><a href="#" class="twitter"><i class="fa fa-twitter"></i><br><span>Twitter</span></a>
+                            </li>
+                            <li><a href="#" class="google"><i class="fa fa-google"></i><br><span>Google+</span></a></li>
+                            <li><a href="#" class="instagram"><i class="fa fa-instagram"></i><br><span>Instagram</span></a>
+                            </li>
+                            <li><a href="#" class="youtube"><i class="fa fa-youtube"></i><br><span>Youtube</span></a>
+                            </li>
+                            <li><a href="#" class="rss"><i class="fa fa-rss"></i><br><span>RSS</span></a></li>
+                        </ul>
+                    </div>
+                    <!-- /social widget -->
+
+                    <!-- subscribe widget -->
+                    <div class="widget subscribe-widget">
+                        <div class="widget-title">
+                            <h2 class="title">Subscribe to Newslatter</h2>
+                        </div>
+                        <form method="POST" action="{% url 'add_sub'%}">
+                            {% csrf_token %}
+                            <input class="input" name="email" type="email" placeholder="Enter Your Email">
+                            <button type="submit" class="input-btn">Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- /Aside Column -->
+            </div>
+            <!-- /ROW -->
+        </div>
+        <!-- /CONTAINER -->
+    </div>
+{% endblock %}
+<!-- /SECTION -->
+
+<!-- FOOTER -->
+{% block footer %}
+    {% include 'include/footer.html' %}
+    <script>
+        function addComment(name, id) {
+            document.getElementById('contactparent').value = id;
+            document.getElementById('contactcomment').innerText = `${name}, `
+        }
+    </script>
+{% endblock %}
+<!-- /FOOTER -->
+
+</body>
+</html>

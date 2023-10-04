@@ -1,0 +1,151 @@
+{% extends 'default.html' %}
+{% load static %}
+{% load custom_filters %}
+{% load post_tag %}
+{% block title %}Posts{% endblock %}
+<body>
+{% block header %}
+    {% include 'include/header.html' %}
+{% endblock %}
+{% block content %}
+    <div class="section">
+        <!-- CONTAINER -->
+        <div class="container">
+            <!-- ROW -->
+            <div class="row">
+                <!-- Main Column -->
+                <div class="col-md-12">
+                    <!-- section title -->
+                    <form action="{% url 'filter' %}" method="get">
+                        <div class="section-title">
+                            {% if q %}
+                                {% if q.count > 0 %}
+                                    <h2 class="title">Search Result for "{{ q }}"</h2>
+                                {% else %}
+                                    <h2 class="title">Not Found</h2>
+                                {% endif %}
+                            {% else %}
+                                <h2 class="title">Last Posts</h2>
+                            {% endif %}
+                            <!-- tab nav -->
+                            <ul class="tab-nav pull-right">
+                                <li class="active"><a data-toggle="tab" href="#tab1">All</a></li>
+                                {% get_categories as categories %}
+                                {% for category in categories %}
+                                    <li>
+                                        <button value="{{ category.id }}" class="nav_input" name="category">
+                                            {{ category }}
+                                        </button>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+
+                            <!-- /tab nav -->
+                        </div>
+                    </form>
+                    <!-- /section title -->
+
+                    <!-- Tab content -->
+                    <div class="tab-content">
+                        <!-- tab1 -->
+                        <div id="tab1" class="tab-pane fade in active">
+                            <!-- row -->
+                            <div class="row">
+                                {% for post in post_list %}
+                                    <!-- Column 1 -->
+                                    <div class="col-md-3 col-sm-6">
+                                        <!-- ARTICLE -->
+                                        <article class="article">
+                                            <div class="article-img">
+                                                <a href="{{ post.get_absolute_url }}">
+                                                    <img src="{{ post.billboard.url }}" alt="">
+                                                </a>
+                                            </div>
+                                            <div class="article-body">
+                                                <h4 class="article-title">
+                                                    <a href="{{ post.get_absolute_url }}">
+                                                        {{ post.header|truncatechars:20|censor }}
+                                                    </a>
+                                                </h4>
+                                                <ul class="article-meta">
+                                                    <li><i class="fa fa-clock-o">
+                                                        {{ post.time_in|date:"d.m.y H:i" }}
+                                                    </i></li>
+                                                    <li><i class="fa fa-comments">
+                                                        {{ post.comment_set.all.count }}
+                                                    </i></li>
+                                                </ul>
+                                            </div>
+                                        </article>
+                                        <!-- /ARTICLE -->
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <!-- /row -->
+                            <!-- /tab1 -->
+                        </div>
+                        <!-- /tab content -->
+                    </div>
+                    <!-- /Main Column -->
+                    {% include 'include/paginator.html' %}
+                </div>
+                <!-- /ROW -->
+            </div>
+            <!-- /CONTAINER -->
+        </div>
+    </div>
+    <div class="section">
+    <!-- CONTAINER -->
+    <div class="container">
+        <!-- ROW -->
+        <div class="row">
+            <!-- Main Column -->
+            <div class="col-md-8">
+                <!-- section title -->
+                <div class="section-title">
+                    <h2 class="title">Popular Posts</h2>
+                </div>
+                <!-- /section title -->
+                {% get_popular_post as rated_posts %}
+                {% for rated_post in rated_posts %}
+                    <!-- ARTICLE -->
+                    <article class="article row-article">
+                        <div class="article-img">
+                            <a href="{{ rated_post.get_absolute_url }}">
+                                <img src="{{ rated_post.billboard.url }}" alt="">
+                            </a>
+                        </div>
+                        <div class="article-body">
+                            <ul class="article-info">
+                                <li class="article-category"><a
+                                        href="{{ rated_post.get_absolute_url }}">{{ rated_post.get_chapter_display }}</a>
+                                </li>
+                                <li class="article-type"><i class="fa fa-file-text"></i></li>
+                            </ul>
+                            <h3 class="article-title"><a
+                                    href="{{ rated_post.get_absolute_url }}">{{ rated_post.header|truncatechars:20|censor }}</a>
+                            </h3>
+                            <ul class="article-meta">
+                                <li><i class="fa fa-clock-o"></i>{{ rated_post.time_in|date:"d.m.y H:i" }}</li>
+                                <li><i class="fa fa-comments"></i>{{ rated_post.comment_set.all.count }}</li>
+                            </ul>
+                            <p>{{ rated_post.content }}</p>
+                        </div>
+                    </article>
+                    <!-- /ARTICLE -->
+                {% endfor %}
+
+                <!-- pagination -->
+                {% include 'include/paginator.html' %}
+            </div>
+            <!-- /ROW -->
+        </div>
+        <!-- /CONTAINER -->
+    </div>
+{% endblock %}
+
+{% block footer %}
+    {% include 'include/footer.html' %}
+{% endblock %}
+</body>
+</html>

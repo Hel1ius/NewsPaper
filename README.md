@@ -1,2 +1,0 @@
-# NewsPaper
-Django Project(NewsPaper).

@@ -1,0 +1,97 @@
+<!-- Header -->
+{% load static %}
+<header id="header">
+    <!-- Top Header -->
+    <div id="top-header">
+        <div class="container">
+            <div class="header-links">
+                <ul>
+                    <li><a href="#">About us</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Advertisement</a></li>
+                    <li><a href="#">Privacy</a></li>
+                    {% if user.is_authenticated %}
+                        <li>
+                            <form method="post" action="{% url 'account_logout' %}">
+                                {% csrf_token %}
+                                <button type="submit"><i class="fa fa-sign-in"></i> Logout</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="{% url 'account_login' %}"><i class="fa fa-sign-in"></i> Login</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="header-social">
+                <ul>
+                    <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                    <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                    <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                    <li><a href="#"><i class="fa fa-youtube"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /Top Header -->
+
+    <!-- Center Header -->
+    <div id="center-header">
+        <div class="container">
+            <div class="header-logo">
+                <a href="{% url 'post_list' %}" class="logo"><img src="{% static 'img/logo.png' %}" alt=""></a>
+            </div>
+            <div class="header-ads">
+                <img class="center-block" src="{% static 'img/ad-2.jpg' %}" alt="">
+            </div>
+        </div>
+    </div>
+    <!-- /Center Header -->
+
+    <!-- Nav Header -->
+    <div id="nav-header">
+        <div class="container">
+            <nav id="main-nav">
+                <div class="nav-logo">
+                    <a href="#" class="logo"><img src="{% static 'img/logo-alt.png' %}" alt=""></a>
+                </div>
+                <form action="{% url 'chapter' %}" method="get">
+                    <ul class="main-nav nav navbar-nav">
+                        <li class="active"><a href="{% url 'post_list' %}">Home</a></li>
+                        <li>
+                            <button type="submit" value="N" class="nav_button" name="chapter">News
+                            </button>
+                        </li>
+                        <li>
+                            <button type="submit" value="A" class="nav_button" name="chapter">Article
+                            </button>
+                        </li>
+                        {% if user.is_authenticated %}
+                            <li><a href="{% url 'add_post' %}">Добавить новость</a></li>
+                        {% endif %}
+                        {% if is_not_premium and user.is_authenticated %}
+                            <li><a href="{% url 'upgrade' %}">Стать автором!</a></li>
+                        {% endif %}
+                    </ul>
+                </form>
+            </nav>
+            <div class="button-nav">
+                <form class="search_form" method="GET" action="{% url 'search' %}">
+                    <input class="search_input" type="text" placeholder="Искать здесь..." name="q">
+                    <button class="search_button" type="submit"></button>
+                </form>
+                {#                <button class="search-collapse-btn"><i class="fa fa-search"></i></button>#}
+                {#                <button class="nav-collapse-btn"><i class="fa fa-bars"></i></button>#}
+                {#                <div class="search-form">#}
+                {#                    <form>#}
+                {#                        <input class="input" type="text" name="search" placeholder="Search">#}
+                {#                    </form>#}
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- /Nav Header -->
+</header>
+<!-- /Header -->

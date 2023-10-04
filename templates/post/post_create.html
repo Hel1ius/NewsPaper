@@ -1,0 +1,17 @@
+{% extends 'default.html' %}
+{% block title %}Create Post{% endblock %}
+{% block header %}
+    {% include 'include/header.html' %}
+{% endblock %}
+{% block content %}
+    <form method="POST" enctype="multipart/form-data" class="form_create">
+        {% csrf_token %}
+        {{ form }} <!-- Теперь нам нужна только готовая форма и кнопка -->
+        {% if is_editing %}
+            <input type="submit" value="Редактировать Новость">
+            <a class="delete-button" href="{% url 'delete_post' post.id %}">Удалить новость</a>
+        {% else %}
+            <input type="submit" value="Добавить Новость">
+        {% endif %}
+    </form>
+{% endblock %}

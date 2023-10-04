@@ -1,0 +1,10 @@
+{% extends 'default.html' %}
+{% block title %}Are you sure?{% endblock %}
+{% block content %}
+    <h2>Вы действительно хотите удалить пост '{{ post.header }}'</h2>
+    <form method="POST">
+    {% csrf_token %}
+    <button class="btn btn-primary" type="submit" value="Подтвердить">Подтвердить</button>
+    </form>
+    <a class="btn btn-primary" href="{% url 'update_post' post.id %}">Отмена</a>
+{% endblock %}
